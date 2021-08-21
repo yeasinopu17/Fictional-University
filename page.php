@@ -30,16 +30,31 @@ while (have_posts()) {
     ?>
 
 
+    <?php 
+    $testArray = get_pages(array(
+      'child_of' => get_the_ID()// if the current page has child the return an array with child, else return null
+    ));
+    if ($theParent or $testArray) { ?>
+    <div class="page-links">
+      <h2 class="page-links__title"><a href="<?php echo get_permalink($theParent) ?>"><?php echo get_the_title($theParent) ?></a></h2><!-- $theParent = 0 then title function return current page title -->
+      <ul class="min-list">
+        <?php 
+          if ($theParent) { // if parent
+            $findTheChildOf = $theParent;
+          } else { // not parent
+            $findTheChildOf = get_the_ID();
+            
+          }
+          wp_list_pages(array(
+            'title_li' => NULL,
+            'child_of' => $findTheChildOf,
+            'sort_column' => 'menu_order'
+          )); 
+        ?>
+      </ul>
+    </div>
+    <?php } ?>
 
-    <!--
-        <div class="page-links">
-          <h2 class="page-links__title"><a href="#">About Us</a></h2>
-          <ul class="min-list">
-            <li class="current_page_item"><a href="#">Our History</a></li>
-            <li><a href="#">Our Goals</a></li>
-          </ul>
-        </div>
-        -->
     <div class="generic-content">
       <?php the_content() ?>
 
