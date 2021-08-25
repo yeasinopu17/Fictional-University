@@ -1,3 +1,4 @@
+<!-- Single.php -->
 <?php
 
 get_header();
