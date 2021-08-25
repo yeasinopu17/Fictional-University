@@ -23,8 +23,41 @@ while (have_posts()) {
     <div class="generic-content">
       <?php the_content(); ?>
 
-      <!-- for fetching related event of an individual program  -->
+      <!-- professor section -->
       <?php
+      $relatedProfessor = new WP_Query(array(
+        'posts_per_page' => -1,
+        'post_type' => 'professor',
+        'orderby' => 'title',
+        'order' => 'ASC',
+        'meta_query' => array(
+          array(
+            'key' => 'related_programs',
+            'compare' => 'LIKE',
+            'value' => '"' . get_the_ID() . '"'
+          )
+        )
+      ));
+      if ($relatedProfessor->have_posts()) { ?>
+        <hr class="section-break">
+        <h2 class="headline headline--medium"><?php echo get_the_title(); ?> Professor</h2>
+
+        <?php
+        while ($relatedProfessor->have_posts()) {
+          $relatedProfessor->the_post();
+        ?>
+          <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+        <?php
+        }
+      }
+      wp_reset_postdata();
+
+
+      // end of professor section
+
+
+      // for fetching related event of an individual program
+
       $today = date('Ymd');
       $homePageEvents = new WP_Query(array(
         'posts_per_page' => 2,
