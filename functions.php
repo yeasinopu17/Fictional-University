@@ -32,6 +32,9 @@ function university_features() {
   // register_nav_menu('footerLocationOne', 'Footer Location One');// create location of menu in admin panel
   // register_nav_menu('footerLocationTwo', 'Footer Location Two');
   add_theme_support('title-tag');
+  add_theme_support('post-thumbnails'); // for feature image, this will only work for blog
+  add_image_size('professorLandscrape', 400, 260, true);
+  add_image_size('professorPortrait', 480, 650, true);
 }
 
 
@@ -59,7 +62,7 @@ function university_adjust_queries($query) {
 
   //for program query manipulation
   if (!is_admin() and is_post_type_archive('program') and $query->is_main_query()) {
-    $query->set('posts_per_page', -1);//-1 means all will fetch
+    $query->set('posts_per_page', -1); //-1 means all will fetch
     $query->set('orderby', 'title');
     $query->set('order', 'ASC');
   }
