@@ -34,7 +34,7 @@ function university_files() {
   wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
   wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 
-  wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=yourkeygoeshere', NULL, '1.0', true);
+  wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=AIzaSyAjfCmfWT-lTM3sa4BzIsuhm8qVvwrgkjM', NULL, '1.0', true);
   wp_enqueue_script('axios', '//cdn.jsdelivr.net/npm/axios/dist/axios.min.js', NULL, '1.0', true);
   wp_enqueue_script('glidejs', '//cdn.jsdelivr.net/npm/@glidejs/glide', NULL, '1.0', true);
 
@@ -91,5 +91,23 @@ function university_adjust_queries($query) {
     $query->set('orderby', 'title');
     $query->set('order', 'ASC');
   }
+
+
+  //for campuses query manipulation
+  // by default campus query fetch 10 row for the first page
+  // we want all at the first page
+  if (!is_admin() and is_post_type_archive('campus') and $query->is_main_query()) {
+    $query->set('posts_per_page', -1); //-1 means all will fetch
+  }
 }
 add_action('pre_get_posts', 'university_adjust_queries');
+
+
+
+
+function universityMapKey($api) {
+  $api['key'] = 'AIzaSyAjfCmfWT-lTM3sa4BzIsuhm8qVvwrgkjM';
+  return $api;
+}
+
+add_filter('acf/fields/google_map/api','universityMapKey');
