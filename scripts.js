@@ -150,6 +150,7 @@
   class Search {
     // 1. describe and create/initiate our object
     constructor() {
+      this.addSearchHTML();
       this.openButton = $(".js-search-trigger");
       this.closeButton = $(".search-overlay__close");
       this.searchOverlay = $(".search-overlay");
@@ -174,13 +175,13 @@
     typingLogic() {
       if (this.searchField.val() != this.previousValue) {
         clearTimeout(this.typingTimer);
-        
+
         if (this.searchField.val()) {
           if (!this.isSpinnerVisible) {
             this.resultDiv.html('<div class="spinner-loader"></div>');
             this.isSpinnerVisible = true;
           }
-          this.typingTimer = setTimeout(this.getResults.bind(this), 2000);
+          this.typingTimer = setTimeout(this.getResults.bind(this), 700);
         } else {
           this.resultDiv.html("");
           this.isSpinnerVisible = false;
@@ -191,12 +192,39 @@
     }
 
     getResults() {
-      this.resultDiv.html("Imagin real search result");
-      this.isSpinnerVisible = false;
+      // http://localhost/wordpress/wp-json/wp/v2/posts
+      $.getJSON(
+        universityData.root_url +
+          "/wp-json/wp/v2/posts?search=" +
+          this.searchField.val(),
+        (posts) => {
+          // console.log(posts[0].title.rendered);//read first orject, the title and rendered
+          this.resultDiv.html(`
+            <h2 class="search-overlay__section-title">General Information</h2>
+            ${
+              posts.length
+                ? '<ul class="link-list min-list">'
+                : "<p>No Result Found.</p>"
+            }
+              ${posts
+                .map(
+                  (item) =>
+                    `<li><a href="${item.link}">${item.title.rendered}</a></li>`
+                )
+                .join("")}
+            ${posts.length ? "</ul>" : ""}
+          `);
+          this.isSpinnerVisible = false;
+        }
+      );
     }
 
     keyPressDispatcher(e) {
-      if (e.keyCode == 83 && !this.isOverlayOpen && !$("input, textarea").is(":focus")) {
+      if (
+        e.keyCode == 83 &&
+        !this.isOverlayOpen &&
+        !$("input, textarea").is(":focus")
+      ) {
         this.openOverlay();
       }
       if (e.keyCode == 27 && this.isOverlayOpen) {
@@ -207,6 +235,10 @@
     openOverlay() {
       this.searchOverlay.addClass("search-overlay--active");
       $("body").addClass("body-no-scroll");
+      this.searchField.val('');
+      setTimeout(() => {
+        this.searchField.focus();
+      }, 301);
       this.isOverlayOpen = true;
       console.log("openOverlay run");
     }
@@ -216,6 +248,23 @@
       $("body").removeClass("body-no-scroll");
       this.isOverlayOpen = false;
       console.log("closeOverlay run");
+    }
+
+    addSearchHTML() {
+      $("body").append(`
+        <div class="search-overlay">
+          <div class="search-overlay__top">
+            <div class="container">
+              <i class="fa fa-search search-overlay__icon" aria-hidden="true"></i>
+              <input type="text" class="search-term" placeholder="What are you looking for?" id="search-term">
+              <i class="fa fa-window-close search-overlay__close" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="container">
+            <div id="search-overlay__results"></div>
+          </div>
+        </div>
+      `);
     }
   }
 
