@@ -29,9 +29,7 @@
     constructor() {
       if (document.querySelector(".hero-slider")) {
         // count how many slides there are
-        const dotCount = document.querySelectorAll(
-          ".hero-slider__slide"
-        ).length;
+        const dotCount = document.querySelectorAll(".hero-slider__slide").length;
 
         // Generate the HTML for the navigation dots
         let dotHTML = "";
@@ -40,9 +38,7 @@
         }
 
         // Add the dots HTML to the DOM
-        document
-          .querySelector(".glide__bullets")
-          .insertAdjacentHTML("beforeend", dotHTML);
+        document.querySelector(".glide__bullets").insertAdjacentHTML("beforeend", dotHTML);
 
         // Actually initialize the glide / slider script
         var glide = new Glide(".hero-slider", {
@@ -91,10 +87,7 @@
     } // end new_map
 
     add_marker($marker, map) {
-      var latlng = new google.maps.LatLng(
-        $marker.getAttribute("data-lat"),
-        $marker.getAttribute("data-lng")
-      );
+      var latlng = new google.maps.LatLng($marker.getAttribute("data-lat"), $marker.getAttribute("data-lng"));
 
       var marker = new google.maps.Marker({
         position: latlng,
@@ -122,10 +115,7 @@
 
       // loop through all markers and create bounds
       map.markers.forEach(function (marker) {
-        var latlng = new google.maps.LatLng(
-          marker.position.lat(),
-          marker.position.lng()
-        );
+        var latlng = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
 
         bounds.extend(latlng);
       });
@@ -192,39 +182,28 @@
     }
 
     getResults() {
-      // http://localhost/wordpress/wp-json/wp/v2/posts
-      $.getJSON(
-        universityData.root_url +
-          "/wp-json/wp/v2/posts?search=" +
-          this.searchField.val(),
-        (posts) => {
-          // console.log(posts[0].title.rendered);//read first orject, the title and rendered
+      $.when(
+        $.getJSON(universityData.root_url + "/wp-json/wp/v2/posts?search=" + this.searchField.val()),
+        $.getJSON(universityData.root_url + "/wp-json/wp/v2/pages?search=" + this.searchField.val())
+      ).then(
+        (posts, pages) => {
+          let combinedResults = posts[0].concat(pages[0]);
           this.resultDiv.html(`
-            <h2 class="search-overlay__section-title">General Information</h2>
-            ${
-              posts.length
-                ? '<ul class="link-list min-list">'
-                : "<p>No Result Found.</p>"
-            }
-              ${posts
-                .map(
-                  (item) =>
-                    `<li><a href="${item.link}">${item.title.rendered}</a></li>`
-                )
-                .join("")}
-            ${posts.length ? "</ul>" : ""}
-          `);
+        <h2 class="search-overlay__section-title">General Information</h2>
+        ${combinedResults.length ? '<ul class="link-list min-list">' : "<p>No general information matches that search.</p>"}
+          ${combinedResults.map((item) => `<li><a href="${item.link}">${item.title.rendered}</a></li>`).join("")}
+        ${combinedResults.length ? "</ul>" : ""}
+      `);
           this.isSpinnerVisible = false;
+        },
+        () => {
+          this.resultDiv.html("<p>Unexpected Error, Please try again.</p>");
         }
       );
     }
 
     keyPressDispatcher(e) {
-      if (
-        e.keyCode == 83 &&
-        !this.isOverlayOpen &&
-        !$("input, textarea").is(":focus")
-      ) {
+      if (e.keyCode == 83 && !this.isOverlayOpen && !$("input, textarea").is(":focus")) {
         this.openOverlay();
       }
       if (e.keyCode == 27 && this.isOverlayOpen) {
@@ -235,7 +214,7 @@
     openOverlay() {
       this.searchOverlay.addClass("search-overlay--active");
       $("body").addClass("body-no-scroll");
-      this.searchField.val('');
+      this.searchField.val("");
       setTimeout(() => {
         this.searchField.focus();
       }, 301);
