@@ -1,5 +1,7 @@
 <?php
 
+require get_theme_file_path('/inc/search-route.php');
+
 function pageBanner($args = null) {
 
   if (!$args['title']) {
@@ -9,7 +11,7 @@ function pageBanner($args = null) {
     $args['subtitle'] = get_field('page_banner_subtitle');
   }
   if (!$args['photo']) {
-    if (get_field('page_banner_background_image') AND !is_archive() AND !is_home()) {
+    if (get_field('page_banner_background_image') and !is_archive() and !is_home()) {
       $args['photo'] = get_field('page_banner_background_image')['sizes']['pageBanner'];
     } else {
       $args['photo'] = get_theme_file_uri('/images/ocean.jpg');
@@ -17,7 +19,7 @@ function pageBanner($args = null) {
   }
 ?>
   <div class="page-banner">
-    <div class="page-banner__bg-image" style="background-image: url(<?php echo $args['photo'];?>)">
+    <div class="page-banner__bg-image" style="background-image: url(<?php echo $args['photo']; ?>)">
     </div>
     <div class="page-banner__content container container--narrow">
       <h1 class="page-banner__title"><?php echo $args['title'] ?></h1>
@@ -103,11 +105,18 @@ function university_adjust_queries($query) {
 add_action('pre_get_posts', 'university_adjust_queries');
 
 
-
-
 function universityMapKey($api) {
   $api['key'] = 'AIza';
   return $api;
 }
 
-add_filter('acf/fields/google_map/api','universityMapKey');
+add_filter('acf/fields/google_map/api', 'universityMapKey');
+
+function university_custom_rest() {
+  register_rest_field('post', 'authorName', array(
+    'get_callback' => function () {
+      return get_the_author();
+    }
+  ));
+}
+add_action('rest_api_init', 'university_custom_rest');
