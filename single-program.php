@@ -14,7 +14,7 @@ while (have_posts()) {
       </p>
     </div>
     <div class="generic-content">
-      <?php the_content(); ?>
+      <?php the_field('main_body_content'); ?>
 
       <!-- professor section -->
       <?php
@@ -84,30 +84,30 @@ while (have_posts()) {
       <hr class="section-break">
       <h2 class="headline headline--medium">Upcoming <?php echo get_the_title(); ?> Event</h2>
 
-    <?php
+      <?php
           while ($homePageEvents->have_posts()) {
             $homePageEvents->the_post();
             get_template_part('template-parts/content', 'event');
           }
         }
-        wp_reset_postdata(  );
+        wp_reset_postdata();
         // End related event of an individual program
-        
-        
-        
+
+
+
         // for fetching related campuses of an single program
-        $relatedCampuses = get_field('related_campus');// return multiple or one array items
+        $relatedCampuses = get_field('related_campus'); // return multiple or one array items
         if ($relatedCampuses) {
           echo '<hr class="section-break">';
-          echo '<h2 class="headline headline--medium">'.get_the_title() .' is Available at this Campuses : </h2>';
+          echo '<h2 class="headline headline--medium">' . get_the_title() . ' is Available at this Campuses : </h2>';
           echo '<ul class="min-list link-list">';
 
-          foreach($relatedCampuses as $campus) { 
+          foreach ($relatedCampuses as $campus) {
             // var_dump($campus);
-          ?>
-            <li><a href="<?php  echo get_the_permalink($campus); ?>"><?php echo get_the_title($campus); ?></a></li>
+      ?>
+        <li><a href="<?php echo get_the_permalink($campus); ?>"><?php echo get_the_title($campus); ?></a></li>
 
-        <?php
+    <?php
           }
           echo '</ul>';
         }
