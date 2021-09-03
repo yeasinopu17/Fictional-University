@@ -298,6 +298,7 @@
       }, 301);
       this.isOverlayOpen = true;
       console.log("openOverlay run");
+      return false;
     }
 
     closeOverlay() {

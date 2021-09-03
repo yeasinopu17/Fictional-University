@@ -31,6 +31,7 @@ while (have_posts()) {
           )
         )
       ));
+      // var_dump($relatedProfessor);
       if ($relatedProfessor->have_posts()) { ?>
         <hr class="section-break">
         <h2 class="headline headline--medium"><?php echo get_the_title(); ?> Professor</h2>

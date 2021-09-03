@@ -14,6 +14,7 @@ function universitySearchResults($data) {
     ));
 
     // $mainQuery->posts;
+    // var_dump($mainQuery);
     $results = array(
         'generalInfo' => array(),
         'professors' => array(),
