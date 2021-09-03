@@ -121,6 +121,15 @@
   </div>
 </div>
 
+<!-- user test code -->
+<!-- <?php   
+$u = wp_get_current_user();
+var_dump($u);
+echo '<br>'; 
+echo var_dump($u->caps['subscriber']);
+?>
+-->
+
 <?php
 get_footer();
 

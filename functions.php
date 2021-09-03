@@ -120,3 +120,26 @@ function university_custom_rest() {
   ));
 }
 add_action('rest_api_init', 'university_custom_rest');
+
+// log in redirect subscriber acc to home page, instead of dashboard
+function redirectSubsToHome() {
+  $currentUser = wp_get_current_user();
+  if(count($currentUser->roles) == 1 and $currentUser->roles[0] == 'subscriber') {
+    wp_redirect(site_url('/'));
+    exit;
+  }
+}
+
+add_action('admin_init', 'redirectSubsToHome');
+
+
+// delete top bar for subscriber
+function noSubsAdminBar() {
+  $currentUser = wp_get_current_user();
+  if(count($currentUser->roles) == 1 and $currentUser->roles[0] == 'subscriber') {
+    show_admin_bar(false);
+  }
+}
+
+add_action('wp_loaded', 'noSubsAdminBar');
+
