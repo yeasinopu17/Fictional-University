@@ -21,6 +21,7 @@ while (have_posts()) {
       <input type="text" placeholder="Title" class="new-note-title">
       <textarea class="new-note-body" placeholder="Your Note here"></textarea>
       <span class="submit-note">Create Note</span>
+      <span class="note-limit-message">Note Limit Reached: Delete an existing note to make room for a new one.</span>
     </div>
 
     <!--END create new note -->
