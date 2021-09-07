@@ -35,7 +35,7 @@
       while ($homePageEvents->have_posts()) {
         $homePageEvents->the_post();
 
-        get_template_part('template-parts/content','event');// don't use extension, this search content-event.php file form template-parts folder
+        get_template_part('template-parts/content', 'event'); // don't use extension, this search content-event.php file form template-parts folder
 
       }
       ?>
@@ -121,14 +121,6 @@
   </div>
 </div>
 
-<!-- user test code -->
-<!-- <?php   
-$u = wp_get_current_user();
-var_dump($u);
-echo '<br>'; 
-echo var_dump($u->caps['subscriber']);
-?>
--->
 
 <?php
 get_footer();
