@@ -384,7 +384,7 @@
           thisNote.slideUp();
           console.log("congrats delete ok");
           console.log(response);
-          if(response.userNoteCount < 4){
+          if (response.userNoteCount < 4) {
             $(".note-limit-message").removeClass("active");
           }
         },
@@ -477,7 +477,72 @@
   /* ===============================================================
     Like a Professor Feature
   =============================================================== */
-  class Like {}
+  class Like {
+    // 1. describe and create/initiate our object
+    constructor() {
+      this.events();
+    }
+
+    // 2. events
+    events() {
+      $(".like-box").on("click", this.ourClickDispatcher.bind(this));
+    }
+
+    // 3. methods (function, action...)
+    ourClickDispatcher(e) {
+      let currentLikeBox = $(e.target).closest(".like-box");
+
+      if (currentLikeBox.attr("data-exists") == "yes") {
+        this.deleteLike(currentLikeBox);
+      } else {
+        this.createLike(currentLikeBox);
+      }
+    }
+
+    createLike(currentLikeBox) {
+      $.ajax({
+        beforeSend: (xhr) => {
+          xhr.setRequestHeader("X-WP-Nonce", universityData.nonce);
+        },
+        url: universityData.root_url + "/wp-json/university/v1/manageLike",
+        type: "POST",
+        data: { professorId: currentLikeBox.data("id") },
+        success: (response) => {
+          currentLikeBox.attr("data-exists", "yes");
+          let likeCount = parseInt(currentLikeBox.find(".like-count").html(), 10);
+          likeCount++;
+          currentLikeBox.find(".like-count").html(likeCount);
+          currentLikeBox.attr("data-like", response);
+          console.log(response);
+        },
+        error: (response) => {
+          console.log(response);
+        },
+      });
+    }
+
+    deleteLike(currentLikeBox) {
+      $.ajax({
+        beforeSend: (xhr) => {
+          xhr.setRequestHeader("X-WP-Nonce", universityData.nonce);
+        },
+        url: universityData.root_url + "/wp-json/university/v1/manageLike",
+        data: { like: currentLikeBox.attr("data-like") },
+        type: "DELETE",
+        success: (response) => {
+          currentLikeBox.attr("data-exists", "no");
+          let likeCount = parseInt(currentLikeBox.find(".like-count").html(), 10);
+          likeCount--;
+          currentLikeBox.find(".like-count").html(likeCount);
+          currentLikeBox.attr("data-like", "");
+          console.log(response);
+        },
+        error: (response) => {
+          console.log(response);
+        },
+      });
+    }
+  }
 
   new Like();
 })(jQuery);
