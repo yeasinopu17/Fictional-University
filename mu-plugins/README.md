@@ -1,0 +1,1 @@
+This mu plugin section goes to wp-content folder
